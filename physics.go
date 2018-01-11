@@ -14,7 +14,7 @@ type physicsEntity struct {
 	*Box2dComponent
 }
 
-// Box2dPhysicsSystem provides a system that allows entites to follow the box2d
+// PhysicsSystem provides a system that allows entites to follow the box2d
 // physics engine calculations.
 type PhysicsSystem struct {
 	entities []physicsEntity
