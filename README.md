@@ -10,11 +10,3 @@ go get github.com/Noofbiz/engoBox2dSystem
 ```
 
 Check out the demos to see what you can do. They're currently a work in progress, so check back later for more!
-
-To Do:
-
-[ ]Finish demos
-
-[ ]Write a manual / tutorial
-
-[ ]Write tests for each system
