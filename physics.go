@@ -33,6 +33,8 @@ type box2dPhysicsEntity struct {
 // physics engine calculations.
 type Box2dPhysicsSystem struct {
 	entities []box2dPhysicsEntity
+	
+        VelocityIterations, PositionIterations int
 }
 
 // Add adds the entity to the physics system
