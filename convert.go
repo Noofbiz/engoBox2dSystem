@@ -13,6 +13,10 @@ type Convert struct {
         PixelsPerMeter float32
 }
 
+// TheConverter is the internal converter used by the system. Use this rather than create your own,
+// but you can change the pixels per meter here and it'll change it for all the systems too. 
+var TheConverter = &Convert{20}
+
 // UnitType is the type of unit to convert, either positional or angular
 type UnitType uint8
 
@@ -24,7 +28,7 @@ const (
 )
 
 // ToRender converts values from the Box2d World into values for the space component
-func (c Convert) ToRender(val float64, unit UnitType) float32 {
+func (c *Convert) ToRender(val float64, unit UnitType) float32 {
         var ret float32
 	switch unit {
                 case Positional:
@@ -36,7 +40,7 @@ func (c Convert) ToRender(val float64, unit UnitType) float32 {
 }
 
 // ToBox2d converts values from the space component into values for the Box2d World 
-func (c Convert) ToBox2d(val float32, unit UnitType) float64 {
+func (c *Convert) ToBox2d(val float32, unit UnitType) float64 {
 	var ret float64
 	switch unit {
                 case Positional:
@@ -50,7 +54,7 @@ func (c Convert) ToBox2d(val float32, unit UnitType) float64 {
 // ToEngoPoint converts a box2d.B2Vec2 into an engo.Point
 // 
 // note that the units are converted, not just copying values
-func (c Convert) ToEngoPoint(vec box2d.B2Vec2) engo.Point {
+func (c *Convert) ToEngoPoint(vec box2d.B2Vec2) engo.Point {
         return engo.Point{
                 X: c.ToRender(vec.X, Positional),
                 Y: c.ToRender(vec.Y, Positional),
@@ -60,7 +64,7 @@ func (c Convert) ToEngoPoint(vec box2d.B2Vec2) engo.Point {
 // ToBox2d2Vec converts an engo.Point into a box2d.B2Vec2
 //
 // note that the units are converted, not just copying values
-func (c Convert) ToBox2d2Vec(pt engo.Point) box2d.B2Vec2 {
+func (c *Convert) ToBox2d2Vec(pt engo.Point) box2d.B2Vec2 {
 	return box2d.B2Vec2{
                 X: c.ToRender(pt.X, Positional),
                 Y: c.ToRender(pt.Y, Positional),
@@ -68,21 +72,21 @@ func (c Convert) ToBox2d2Vec(pt engo.Point) box2d.B2Vec2 {
 }
 
 // PxToMeters converts from the space component's px to Box2d's meters
-func (c Convert) PxToMeters(px float32) float64 {
+func (c *Convert) PxToMeters(px float32) float64 {
 	return float64(px / c.PixelsPerMeter)
 }
 
 // MetersToPx converts from Box2d's meters to the space component's pixels
-func (c Convert) MetersToPx(m float64) float32 {
+func (c *Convert) MetersToPx(m float64) float32 {
 	return float32(m) * c.PixelsPerMeter
 }
 
 // RadToDeg converts from radians to degrees
-func (c Convert) RadToDeg(r float64) float32 {
+func (c *Convert) RadToDeg(r float64) float32 {
 	return float32(r * 180) / math.Pi
 }
 
 // DegToRad converts from degrees to radians
-func (c Convert) DegToRad(d float32) float64 {
+func (c *Convert) DegToRad(d float32) float64 {
 	return float64(d * math.Pi / 180)
 }
