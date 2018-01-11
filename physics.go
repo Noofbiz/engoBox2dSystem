@@ -54,11 +54,6 @@ func (b *PhysicsSystem) Update(dt float32) {
 
 	//Update Render/Space components to World components after simulation
 	for _, e := range b.entities {
-		position := e.Body.GetPosition()
-		point := engo.Point{
-			X: MetersToPx(float32(position.X)),
-			Y: MetersToPx(float32(position.Y)),
-		}
 		e.SpaceComponent.Rotation = TheConverter.ToRender(e.Body.GetAngle(), Angular)
 		e.SpaceComponent.SetCenter(TheConverter.ToEngoPoint(e.Body.GetPosition()))
 	}
