@@ -14,7 +14,7 @@ type CollisionStartMessage struct {
 }
 
 // Type implements the engo.Message interface
-func (Box2dCollisionStartMessage) Type() string { return "CollisionStartMessage" }
+func (CollisionStartMessage) Type() string { return "CollisionStartMessage" }
 
 // CollisionEndMessage is sent out for the box2d collision callback
 // CollisionEnd
@@ -34,7 +34,7 @@ type PreSolveMessage struct {
 // Type implements the engo.Message interface
 func (PreSolveMessage) Type() string { return "PreSolveMessage" }
 
-// Box2dPostSolveMessage is sent out after a step of the physics engine
+// PostSolveMessage is sent out after a step of the physics engine
 type PostSolveMessage struct {
 	Contact box2d.B2ContactInterface
 	Impulse *box2d.B2ContactImpulse
@@ -51,7 +51,7 @@ type collisionEntity struct {
 
 // CollisionSystem is a system that handles the callbacks for box2d's
 // collision system. This system does not require the physics system, but a
-// they do need box2d bodies. 
+// they do need box2d bodies.
 type CollisionSystem struct {
 	entities []collisionEntity
 }
@@ -89,8 +89,8 @@ func (c *CollisionSystem) Remove(basic ecs.BasicEntity) {
 func (c *CollisionSystem) Update(dt float32) {
 	//Set World components to the Render/Space Components
 	for _, e := range c.entities {
-		e.Body.SetTransform(TheConverter.ToBox2d2Vec(e.Center()), TheConverter.ToBox2d(e.Rotation, Angular))
-        }
+		e.Body.SetTransform(TheConverter.ToBox2d2Vec(e.Center()), TheConverter.DegToRad(e.Rotation))
+	}
 
 	//Remove all bodies on list for removal
 	for _, bod := range listOfBodiesToRemove {

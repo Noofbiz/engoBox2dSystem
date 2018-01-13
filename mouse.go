@@ -175,8 +175,8 @@ func (m *MouseSystem) Update(dt float32) {
 		}
 
 		//set box2d body to SpaceComponent's position and rotation
-		e.Body.SetTransform(TheConverter.ToBox2d2Vec(e.Center()), TheConverter.ToBox2d(e.Rotation, Angular))
-		
+		e.Body.SetTransform(TheConverter.ToBox2d2Vec(e.Center()), TheConverter.DegToRad(e.Rotation))
+
 		if e.RenderComponent != nil {
 			// Hardcoded special case for the HUD | TODO: make generic instead of hardcoding
 			if e.MouseComponent.IsHUDShader {
@@ -190,8 +190,8 @@ func (m *MouseSystem) Update(dt float32) {
 		}
 
 		mousePoint := box2d.B2Vec2{
-			X: float64(PxToMeters(mx)),
-			Y: float64(PxToMeters(my)),
+			X: TheConverter.PxToMeters(mx),
+			Y: TheConverter.PxToMeters(my),
 		}
 		var containsMouse bool
 

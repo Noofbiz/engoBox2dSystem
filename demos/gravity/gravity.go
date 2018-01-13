@@ -25,8 +25,6 @@ type guy struct {
 
 func (*defaultScene) Preload() {
 	engo.Files.Load("icon.png", "grass.png")
-
-	engoBox2dSystem.InitBox2dSystem(box2d.B2Vec2{X: 0.0, Y: 10.0}, 20.0, 3, 8)
 }
 
 func (*defaultScene) Setup(w *ecs.World) {
@@ -35,7 +33,10 @@ func (*defaultScene) Setup(w *ecs.World) {
 	w.AddSystem(&common.RenderSystem{})
 
 	//add box2d systems
-	w.AddSystem(&engoBox2dSystem.Box2dPhysicsSystem{})
+	w.AddSystem(&engoBox2dSystem.PhysicsSystem{VelocityIterations: 3, PositionIterations: 8})
+
+	//add downward gravity to box2d world
+	engoBox2dSystem.World.SetGravity(box2d.B2Vec2{X: 0, Y: 10})
 
 	// Guy Texture
 	dudeTexture, err := common.LoadedSprite("icon.png")
@@ -70,13 +71,12 @@ func (*defaultScene) Setup(w *ecs.World) {
 	//box2d component setup
 	dudeBodyDef := box2d.NewB2BodyDef()
 	dudeBodyDef.Type = box2d.B2BodyType.B2_dynamicBody
-	dudeBodyDef.Position.X = float64(engoBox2dSystem.PxToMeters(dude.SpaceComponent.Center().X))
-	dudeBodyDef.Position.Y = float64(engoBox2dSystem.PxToMeters(dude.SpaceComponent.Center().Y))
-	dudeBodyDef.Angle = float64(engoBox2dSystem.DegToRad(dude.SpaceComponent.Rotation))
+	dudeBodyDef.Position = engoBox2dSystem.TheConverter.ToBox2d2Vec(dude.Center())
+	dudeBodyDef.Angle = engoBox2dSystem.TheConverter.DegToRad(dude.Rotation)
 	dude.Box2dComponent.Body = engoBox2dSystem.World.CreateBody(dudeBodyDef)
 	var dudeBodyShape box2d.B2PolygonShape
-	dudeBodyShape.SetAsBox(float64(engoBox2dSystem.PxToMeters(dude.SpaceComponent.Width/2)),
-		float64(engoBox2dSystem.PxToMeters(dude.SpaceComponent.Height/2)))
+	dudeBodyShape.SetAsBox(engoBox2dSystem.TheConverter.PxToMeters(dude.SpaceComponent.Width/2),
+		engoBox2dSystem.TheConverter.PxToMeters(dude.SpaceComponent.Height/2))
 	dudeFixtureDef := box2d.B2FixtureDef{
 		Shape:    &dudeBodyShape,
 		Density:  1.0,
@@ -89,7 +89,7 @@ func (*defaultScene) Setup(w *ecs.World) {
 		switch sys := system.(type) {
 		case *common.RenderSystem:
 			sys.Add(&dude.BasicEntity, &dude.RenderComponent, &dude.SpaceComponent)
-		case *engoBox2dSystem.Box2dPhysicsSystem:
+		case *engoBox2dSystem.PhysicsSystem:
 			sys.Add(&dude.BasicEntity, &dude.SpaceComponent, &dude.Box2dComponent)
 		}
 	}
@@ -126,13 +126,12 @@ func (*defaultScene) Setup(w *ecs.World) {
 
 	//box2d component setup
 	grassBodyDef := box2d.NewB2BodyDef()
-	grassBodyDef.Position.X = float64(engoBox2dSystem.PxToMeters(grass.SpaceComponent.Center().X))
-	grassBodyDef.Position.Y = float64(engoBox2dSystem.PxToMeters(grass.SpaceComponent.Center().Y))
-	grassBodyDef.Angle = float64(engoBox2dSystem.DegToRad(grass.SpaceComponent.Rotation))
+	grassBodyDef.Position = engoBox2dSystem.TheConverter.ToBox2d2Vec(grass.Center())
+	grassBodyDef.Angle = engoBox2dSystem.TheConverter.DegToRad(grass.Rotation)
 	grass.Box2dComponent.Body = engoBox2dSystem.World.CreateBody(grassBodyDef)
 	var grassBodyShape box2d.B2PolygonShape
-	grassBodyShape.SetAsBox(float64(engoBox2dSystem.PxToMeters(grass.SpaceComponent.Width/2)),
-		float64(engoBox2dSystem.PxToMeters(grass.SpaceComponent.Height/2)))
+	grassBodyShape.SetAsBox(engoBox2dSystem.TheConverter.PxToMeters(grass.SpaceComponent.Width/2),
+		engoBox2dSystem.TheConverter.PxToMeters(grass.SpaceComponent.Height/2))
 	grassFixtureDef := box2d.B2FixtureDef{Shape: &grassBodyShape}
 	grass.Box2dComponent.Body.CreateFixtureFromDef(&grassFixtureDef)
 
@@ -141,7 +140,7 @@ func (*defaultScene) Setup(w *ecs.World) {
 		switch sys := system.(type) {
 		case *common.RenderSystem:
 			sys.Add(&grass.BasicEntity, &grass.RenderComponent, &grass.SpaceComponent)
-		case *engoBox2dSystem.Box2dPhysicsSystem:
+		case *engoBox2dSystem.PhysicsSystem:
 			sys.Add(&grass.BasicEntity, &grass.SpaceComponent, &grass.Box2dComponent)
 		}
 	}
