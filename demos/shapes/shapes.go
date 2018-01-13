@@ -31,8 +31,6 @@ type wall struct {
 
 func (*defaultScene) Preload() {
 	engo.Files.Load("food.png")
-
-	engoBox2dSystem.InitBox2dSystem(box2d.B2Vec2{X: 0.0, Y: 0.0}, 20.0, 3, 8)
 }
 
 func (*defaultScene) Setup(w *ecs.World) {
@@ -98,13 +96,12 @@ func (*defaultScene) Setup(w *ecs.World) {
 	// apple's box2d Body
 	appleBodyDef := box2d.NewB2BodyDef()
 	appleBodyDef.Type = box2d.B2BodyType.B2_dynamicBody
-	appleBodyDef.Position.X = float64(engoBox2dSystem.PxToMeters(apple.SpaceComponent.Center().X))
-	appleBodyDef.Position.Y = float64(engoBox2dSystem.PxToMeters(apple.SpaceComponent.Center().Y))
-	appleBodyDef.Angle = float64(engoBox2dSystem.DegToRad(apple.SpaceComponent.Rotation))
+	appleBodyDef.Position = engoBox2dSystem.Conv.ToBox2d2Vec(apple.SpaceComponent.Center())
+	appleBodyDef.Angle = engoBox2dSystem.Conv.DegToRad(apple.SpaceComponent.Rotation)
 	apple.Box2dComponent.Body = engoBox2dSystem.World.CreateBody(appleBodyDef)
 	var appleShape1 box2d.B2CircleShape
-	appleShape1.SetRadius(float64(engoBox2dSystem.PxToMeters(25.5)))
-	appleShape1.M_p.Set(float64(engoBox2dSystem.PxToMeters(-1.5)), float64(engoBox2dSystem.PxToMeters(4.5)))
+	appleShape1.SetRadius(engoBox2dSystem.Conv.PxToMeters(25.5))
+	appleShape1.M_p.Set(engoBox2dSystem.Conv.PxToMeters(-1.5), engoBox2dSystem.Conv.PxToMeters(4.5))
 	appleFixture1Def := box2d.B2FixtureDef{
 		Shape:    appleShape1,
 		Density:  1.0,
@@ -114,15 +111,15 @@ func (*defaultScene) Setup(w *ecs.World) {
 	var appleShape2 box2d.B2PolygonShape
 	var appleShape2Verts []box2d.B2Vec2
 	appleShape2Verts = append(appleShape2Verts,
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(-15)), Y: float64(engoBox2dSystem.PxToMeters(-19))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(-20)), Y: float64(engoBox2dSystem.PxToMeters(-24))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(-20)), Y: float64(engoBox2dSystem.PxToMeters(-29))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(-17)), Y: float64(engoBox2dSystem.PxToMeters(-32))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(-11)), Y: float64(engoBox2dSystem.PxToMeters(-32))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(-1)), Y: float64(engoBox2dSystem.PxToMeters(-27))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(-1)), Y: float64(engoBox2dSystem.PxToMeters(-19))})
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(-15), Y: engoBox2dSystem.Conv.PxToMeters(-19)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(-20), Y: engoBox2dSystem.Conv.PxToMeters(-24)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(-20), Y: engoBox2dSystem.Conv.PxToMeters(-29)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(-17), Y: engoBox2dSystem.Conv.PxToMeters(-32)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(-11), Y: engoBox2dSystem.Conv.PxToMeters(-32)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(-1), Y: engoBox2dSystem.Conv.PxToMeters(-27)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(-1), Y: engoBox2dSystem.Conv.PxToMeters(-19)})
 	appleShape2.Set(appleShape2Verts, 7)
-	appleShape2.M_centroid.Set(float64(engoBox2dSystem.PxToMeters(-18.5)), float64(engoBox2dSystem.PxToMeters(-25.5)))
+	appleShape2.M_centroid.Set(engoBox2dSystem.Conv.PxToMeters(-18.5), engoBox2dSystem.Conv.PxToMeters(-25.5))
 	appleFixture2Def := box2d.B2FixtureDef{
 		Shape:    &appleShape2,
 		Density:  1.0,
@@ -132,12 +129,12 @@ func (*defaultScene) Setup(w *ecs.World) {
 	var appleShape3 box2d.B2PolygonShape
 	var appleShape3Verts []box2d.B2Vec2
 	appleShape3Verts = append(appleShape3Verts,
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(2)), Y: float64(engoBox2dSystem.PxToMeters(-21))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(4)), Y: float64(engoBox2dSystem.PxToMeters(-28))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(6)), Y: float64(engoBox2dSystem.PxToMeters(-28))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(8)), Y: float64(engoBox2dSystem.PxToMeters(-24))})
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(2), Y: engoBox2dSystem.Conv.PxToMeters(-21)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(4), Y: engoBox2dSystem.Conv.PxToMeters(-28)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(6), Y: engoBox2dSystem.Conv.PxToMeters(-28)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(8), Y: engoBox2dSystem.Conv.PxToMeters(-24)})
 	appleShape3.Set(appleShape3Verts, 4)
-	appleShape3.M_centroid.Set(float64(engoBox2dSystem.PxToMeters(5)), float64(engoBox2dSystem.PxToMeters(-24.5)))
+	appleShape3.M_centroid.Set(engoBox2dSystem.Conv.PxToMeters(5), engoBox2dSystem.Conv.PxToMeters(-24.5))
 	appleFixture3Def := box2d.B2FixtureDef{
 		Shape:    &appleShape3,
 		Density:  1.0,
@@ -147,13 +144,13 @@ func (*defaultScene) Setup(w *ecs.World) {
 	var appleShape4 box2d.B2PolygonShape
 	var appleShape4Verts []box2d.B2Vec2
 	appleShape4Verts = append(appleShape4Verts,
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(9)), Y: float64(engoBox2dSystem.PxToMeters(-24))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(11)), Y: float64(engoBox2dSystem.PxToMeters(-26))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(15)), Y: float64(engoBox2dSystem.PxToMeters(-26))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(15)), Y: float64(engoBox2dSystem.PxToMeters(-21))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(12)), Y: float64(engoBox2dSystem.PxToMeters(-18))})
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(9), Y: engoBox2dSystem.Conv.PxToMeters(-24)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(11), Y: engoBox2dSystem.Conv.PxToMeters(-26)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(15), Y: engoBox2dSystem.Conv.PxToMeters(-26)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(15), Y: engoBox2dSystem.Conv.PxToMeters(-21)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(12), Y: engoBox2dSystem.Conv.PxToMeters(-18)})
 	appleShape4.Set(appleShape4Verts, 5)
-	appleShape4.M_centroid.Set(float64(engoBox2dSystem.PxToMeters(12)), float64(engoBox2dSystem.PxToMeters(-22)))
+	appleShape4.M_centroid.Set(engoBox2dSystem.Conv.PxToMeters(12), engoBox2dSystem.Conv.PxToMeters(-22))
 	appleFixture4Def := box2d.B2FixtureDef{
 		Shape:    &appleShape4,
 		Density:  1.0,
@@ -188,21 +185,20 @@ func (*defaultScene) Setup(w *ecs.World) {
 	// cheese's box2d Body
 	cheeseBodyDef := box2d.NewB2BodyDef()
 	cheeseBodyDef.Type = box2d.B2BodyType.B2_dynamicBody
-	cheeseBodyDef.Position.X = float64(engoBox2dSystem.PxToMeters(cheese.SpaceComponent.Center().X))
-	cheeseBodyDef.Position.Y = float64(engoBox2dSystem.PxToMeters(cheese.SpaceComponent.Center().Y))
-	cheeseBodyDef.Angle = float64(engoBox2dSystem.DegToRad(cheese.SpaceComponent.Rotation))
+	cheeseBodyDef.Position = engoBox2dSystem.Conv.ToBox2d2Vec(cheese.SpaceComponent.Center())
+	cheeseBodyDef.Angle = engoBox2dSystem.Conv.DegToRad(cheese.SpaceComponent.Rotation)
 	cheese.Box2dComponent.Body = engoBox2dSystem.World.CreateBody(cheeseBodyDef)
 	var cheeseShape box2d.B2PolygonShape
 	var cheeseShapeVerts []box2d.B2Vec2
 	cheeseShapeVerts = append(cheeseShapeVerts,
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(-33)), Y: float64(engoBox2dSystem.PxToMeters(-29))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(-9)), Y: float64(engoBox2dSystem.PxToMeters(-29))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(35)), Y: float64(engoBox2dSystem.PxToMeters(-13))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(35)), Y: float64(engoBox2dSystem.PxToMeters(18))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(6)), Y: float64(engoBox2dSystem.PxToMeters(30))},
-		box2d.B2Vec2{X: float64(engoBox2dSystem.PxToMeters(-33)), Y: float64(engoBox2dSystem.PxToMeters(11))})
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(-33), Y: engoBox2dSystem.Conv.PxToMeters(-29)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(-9), Y: engoBox2dSystem.Conv.PxToMeters(-29)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(35), Y: engoBox2dSystem.Conv.PxToMeters(-13)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(35), Y: engoBox2dSystem.Conv.PxToMeters(18)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(6), Y: engoBox2dSystem.Conv.PxToMeters(30)},
+		box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(-33), Y: engoBox2dSystem.Conv.PxToMeters(11)})
 	cheeseShape.Set(cheeseShapeVerts, 6)
-	cheeseShape.M_centroid.Set(float64(engoBox2dSystem.PxToMeters(1)), float64(engoBox2dSystem.PxToMeters(-0.5)))
+	cheeseShape.M_centroid.Set(engoBox2dSystem.Conv.PxToMeters(1), engoBox2dSystem.Conv.PxToMeters(-0.5))
 	cheeseFixtureDef := box2d.B2FixtureDef{
 		Shape:    &cheeseShape,
 		Density:  1.0,
