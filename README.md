@@ -1,4 +1,5 @@
-# engoBox2dSystem
+# engoBox2dSystem [![GoDoc](https://godoc.org/github.com/Noofbiz/engoBox2dSystem?status.svg)](https://godoc.org/github.com/Noofbiz/engoBox2dSystem)
+
 Physics, Collision, and Mouse systems for the Engo game engine that utilizes ByteArena's box2d Go port
 
 This is a set of systems for use with the [Engo](https://engo.io/) game engine.
