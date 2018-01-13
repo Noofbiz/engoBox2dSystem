@@ -13,9 +13,9 @@ type Convert struct {
 	PixelsPerMeter float32
 }
 
-// TheConverter is the internal converter used by the system. Use this rather than create your own,
+// Conv is the internal converter used by the system. Use this rather than create your own,
 // but you can change the pixels per meter here and it'll change it for all the systems too.
-var TheConverter = &Convert{20}
+var Conv = &Convert{20}
 
 // ToEngoPoint converts a box2d.B2Vec2 into an engo.Point
 //

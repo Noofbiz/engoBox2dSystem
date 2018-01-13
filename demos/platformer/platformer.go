@@ -90,13 +90,13 @@ func (*defaultScene) Setup(w *ecs.World) {
 	//box2d component setup
 	dudeBodyDef := box2d.NewB2BodyDef()
 	dudeBodyDef.Type = box2d.B2BodyType.B2_dynamicBody
-	dudeBodyDef.Position = engoBox2dSystem.TheConverter.ToBox2d2Vec(dude.SpaceComponent.Center())
-	dudeBodyDef.Angle = engoBox2dSystem.TheConverter.DegToRad(dude.SpaceComponent.Rotation)
+	dudeBodyDef.Position = engoBox2dSystem.Conv.ToBox2d2Vec(dude.SpaceComponent.Center())
+	dudeBodyDef.Angle = engoBox2dSystem.Conv.DegToRad(dude.SpaceComponent.Rotation)
 	dudeBodyDef.FixedRotation = true
 	dude.Box2dComponent.Body = engoBox2dSystem.World.CreateBody(dudeBodyDef)
 	var dudeBodyShape box2d.B2PolygonShape
-	dudeBodyShape.SetAsBox(engoBox2dSystem.TheConverter.PxToMeters(dude.SpaceComponent.Width/2),
-		engoBox2dSystem.TheConverter.PxToMeters(dude.SpaceComponent.Height/2))
+	dudeBodyShape.SetAsBox(engoBox2dSystem.Conv.PxToMeters(dude.SpaceComponent.Width/2),
+		engoBox2dSystem.Conv.PxToMeters(dude.SpaceComponent.Height/2))
 	dudeFixtureDef := box2d.B2FixtureDef{
 		Shape:    &dudeBodyShape,
 		Density:  1.0,
@@ -152,12 +152,12 @@ func (*defaultScene) Setup(w *ecs.World) {
 
 	//box2d component setup
 	grassBodyDef := box2d.NewB2BodyDef()
-	grassBodyDef.Position = engoBox2dSystem.TheConverter.ToBox2d2Vec(grass.SpaceComponent.Center())
-	grassBodyDef.Angle = engoBox2dSystem.TheConverter.DegToRad(grass.SpaceComponent.Rotation)
+	grassBodyDef.Position = engoBox2dSystem.Conv.ToBox2d2Vec(grass.SpaceComponent.Center())
+	grassBodyDef.Angle = engoBox2dSystem.Conv.DegToRad(grass.SpaceComponent.Rotation)
 	grass.Box2dComponent.Body = engoBox2dSystem.World.CreateBody(grassBodyDef)
 	var grassBodyShape box2d.B2PolygonShape
-	grassBodyShape.SetAsBox(engoBox2dSystem.TheConverter.PxToMeters(grass.SpaceComponent.Width/2),
-		engoBox2dSystem.TheConverter.PxToMeters(grass.SpaceComponent.Height/2))
+	grassBodyShape.SetAsBox(engoBox2dSystem.Conv.PxToMeters(grass.SpaceComponent.Width/2),
+		engoBox2dSystem.Conv.PxToMeters(grass.SpaceComponent.Height/2))
 	grassFixtureDef := box2d.B2FixtureDef{Shape: &grassBodyShape}
 	grass.Box2dComponent.Body.CreateFixtureFromDef(&grassFixtureDef)
 
@@ -197,12 +197,12 @@ func (*defaultScene) Setup(w *ecs.World) {
 
 	//box2d component setup
 	grass1BodyDef := box2d.NewB2BodyDef()
-	grass1BodyDef.Position = engoBox2dSystem.TheConverter.ToBox2d2Vec(grass1.SpaceComponent.Center())
-	grass1BodyDef.Angle = engoBox2dSystem.TheConverter.DegToRad(grass1.SpaceComponent.Rotation)
+	grass1BodyDef.Position = engoBox2dSystem.Conv.ToBox2d2Vec(grass1.SpaceComponent.Center())
+	grass1BodyDef.Angle = engoBox2dSystem.Conv.DegToRad(grass1.SpaceComponent.Rotation)
 	grass1.Box2dComponent.Body = engoBox2dSystem.World.CreateBody(grass1BodyDef)
 	var grass1BodyShape box2d.B2PolygonShape
-	grass1BodyShape.SetAsBox(engoBox2dSystem.TheConverter.PxToMeters(grass1.SpaceComponent.Width/2),
-		engoBox2dSystem.TheConverter.PxToMeters(grass1.SpaceComponent.Height/2))
+	grass1BodyShape.SetAsBox(engoBox2dSystem.Conv.PxToMeters(grass1.SpaceComponent.Width/2),
+		engoBox2dSystem.Conv.PxToMeters(grass1.SpaceComponent.Height/2))
 	grass1FixtureDef := box2d.B2FixtureDef{Shape: &grass1BodyShape}
 	grass1.Box2dComponent.Body.CreateFixtureFromDef(&grass1FixtureDef)
 
@@ -242,12 +242,12 @@ func (*defaultScene) Setup(w *ecs.World) {
 
 	//box2d component setup
 	grass2BodyDef := box2d.NewB2BodyDef()
-	grass2BodyDef.Position = engoBox2dSystem.TheConverter.ToBox2d2Vec(grass2.SpaceComponent.Center())
-	grass2BodyDef.Angle = engoBox2dSystem.TheConverter.DegToRad(grass2.SpaceComponent.Rotation)
+	grass2BodyDef.Position = engoBox2dSystem.Conv.ToBox2d2Vec(grass2.SpaceComponent.Center())
+	grass2BodyDef.Angle = engoBox2dSystem.Conv.DegToRad(grass2.SpaceComponent.Rotation)
 	grass2.Box2dComponent.Body = engoBox2dSystem.World.CreateBody(grass2BodyDef)
 	var grass2BodyShape box2d.B2PolygonShape
-	grass2BodyShape.SetAsBox(engoBox2dSystem.TheConverter.PxToMeters(grass2.SpaceComponent.Width/2),
-		engoBox2dSystem.TheConverter.PxToMeters(grass2.SpaceComponent.Height/2))
+	grass2BodyShape.SetAsBox(engoBox2dSystem.Conv.PxToMeters(grass2.SpaceComponent.Width/2),
+		engoBox2dSystem.Conv.PxToMeters(grass2.SpaceComponent.Height/2))
 	grass2FixtureDef := box2d.B2FixtureDef{Shape: &grass2BodyShape}
 	grass2.Box2dComponent.Body.CreateFixtureFromDef(&grass2FixtureDef)
 
@@ -272,12 +272,12 @@ func (*defaultScene) Setup(w *ecs.World) {
 
 	//box2d component setup
 	leftWallBodyDef := box2d.NewB2BodyDef()
-	leftWallBodyDef.Position = engoBox2dSystem.TheConverter.ToBox2d2Vec(leftWall.SpaceComponent.Center())
-	leftWallBodyDef.Angle = engoBox2dSystem.TheConverter.DegToRad(leftWall.SpaceComponent.Rotation)
+	leftWallBodyDef.Position = engoBox2dSystem.Conv.ToBox2d2Vec(leftWall.SpaceComponent.Center())
+	leftWallBodyDef.Angle = engoBox2dSystem.Conv.DegToRad(leftWall.SpaceComponent.Rotation)
 	leftWall.Box2dComponent.Body = engoBox2dSystem.World.CreateBody(leftWallBodyDef)
 	var leftWallBodyShape box2d.B2PolygonShape
-	leftWallBodyShape.SetAsBox(engoBox2dSystem.TheConverter.PxToMeters(leftWall.SpaceComponent.Width/2),
-		engoBox2dSystem.TheConverter.PxToMeters(leftWall.SpaceComponent.Height/2))
+	leftWallBodyShape.SetAsBox(engoBox2dSystem.Conv.PxToMeters(leftWall.SpaceComponent.Width/2),
+		engoBox2dSystem.Conv.PxToMeters(leftWall.SpaceComponent.Height/2))
 	leftWallFixtureDef := box2d.B2FixtureDef{Shape: &leftWallBodyShape}
 	leftWall.Box2dComponent.Body.CreateFixtureFromDef(&leftWallFixtureDef)
 
@@ -300,12 +300,12 @@ func (*defaultScene) Setup(w *ecs.World) {
 
 	//box2d component setup
 	rightWallBodyDef := box2d.NewB2BodyDef()
-	rightWallBodyDef.Position = engoBox2dSystem.TheConverter.ToBox2d2Vec(rightWall.SpaceComponent.Center())
-	rightWallBodyDef.Angle = engoBox2dSystem.TheConverter.DegToRad(rightWall.SpaceComponent.Rotation)
+	rightWallBodyDef.Position = engoBox2dSystem.Conv.ToBox2d2Vec(rightWall.SpaceComponent.Center())
+	rightWallBodyDef.Angle = engoBox2dSystem.Conv.DegToRad(rightWall.SpaceComponent.Rotation)
 	rightWall.Box2dComponent.Body = engoBox2dSystem.World.CreateBody(rightWallBodyDef)
 	var rightWallBodyShape box2d.B2PolygonShape
-	rightWallBodyShape.SetAsBox(engoBox2dSystem.TheConverter.PxToMeters(rightWall.SpaceComponent.Width/2),
-		engoBox2dSystem.TheConverter.PxToMeters(rightWall.SpaceComponent.Height/2))
+	rightWallBodyShape.SetAsBox(engoBox2dSystem.Conv.PxToMeters(rightWall.SpaceComponent.Width/2),
+		engoBox2dSystem.Conv.PxToMeters(rightWall.SpaceComponent.Height/2))
 	rightWallFixtureDef := box2d.B2FixtureDef{Shape: &rightWallBodyShape}
 	rightWall.Box2dComponent.Body.CreateFixtureFromDef(&rightWallFixtureDef)
 
@@ -328,12 +328,12 @@ func (*defaultScene) Setup(w *ecs.World) {
 
 	//box2d component setup
 	ceilBodyDef := box2d.NewB2BodyDef()
-	ceilBodyDef.Position = engoBox2dSystem.TheConverter.ToBox2d2Vec(ceil.SpaceComponent.Center())
-	ceilBodyDef.Angle = engoBox2dSystem.TheConverter.DegToRad(ceil.SpaceComponent.Rotation)
+	ceilBodyDef.Position = engoBox2dSystem.Conv.ToBox2d2Vec(ceil.SpaceComponent.Center())
+	ceilBodyDef.Angle = engoBox2dSystem.Conv.DegToRad(ceil.SpaceComponent.Rotation)
 	ceil.Box2dComponent.Body = engoBox2dSystem.World.CreateBody(ceilBodyDef)
 	var ceilBodyShape box2d.B2PolygonShape
-	ceilBodyShape.SetAsBox(engoBox2dSystem.TheConverter.PxToMeters(ceil.SpaceComponent.Width/2),
-		engoBox2dSystem.TheConverter.PxToMeters(ceil.SpaceComponent.Height/2))
+	ceilBodyShape.SetAsBox(engoBox2dSystem.Conv.PxToMeters(ceil.SpaceComponent.Width/2),
+		engoBox2dSystem.Conv.PxToMeters(ceil.SpaceComponent.Height/2))
 	ceilFixtureDef := box2d.B2FixtureDef{Shape: &ceilBodyShape}
 	ceil.Box2dComponent.Body.CreateFixtureFromDef(&ceilFixtureDef)
 
@@ -367,17 +367,17 @@ func (*defaultScene) Setup(w *ecs.World) {
 
 		//box2d component setup
 		starBodyDef := box2d.NewB2BodyDef()
-		starBodyDef.Position = engoBox2dSystem.TheConverter.ToBox2d2Vec(star.SpaceComponent.Center())
-		starBodyDef.Angle = engoBox2dSystem.TheConverter.DegToRad(star.SpaceComponent.Rotation)
+		starBodyDef.Position = engoBox2dSystem.Conv.ToBox2d2Vec(star.SpaceComponent.Center())
+		starBodyDef.Angle = engoBox2dSystem.Conv.DegToRad(star.SpaceComponent.Rotation)
 		starBodyDef.Type = box2d.B2BodyType.B2_dynamicBody
 		star.Box2dComponent.Body = engoBox2dSystem.World.CreateBody(starBodyDef)
 		var starBodyShape box2d.B2PolygonShape
 		var vertices []box2d.B2Vec2
-		vertices = append(vertices, box2d.B2Vec2{X: engoBox2dSystem.TheConverter.PxToMeters(0), Y: engoBox2dSystem.TheConverter.PxToMeters(-50)})
-		vertices = append(vertices, box2d.B2Vec2{X: engoBox2dSystem.TheConverter.PxToMeters(49), Y: engoBox2dSystem.TheConverter.PxToMeters(-15)})
-		vertices = append(vertices, box2d.B2Vec2{X: engoBox2dSystem.TheConverter.PxToMeters(30), Y: engoBox2dSystem.TheConverter.PxToMeters(41)})
-		vertices = append(vertices, box2d.B2Vec2{X: engoBox2dSystem.TheConverter.PxToMeters(-31), Y: engoBox2dSystem.TheConverter.PxToMeters(41)})
-		vertices = append(vertices, box2d.B2Vec2{X: engoBox2dSystem.TheConverter.PxToMeters(-50), Y: engoBox2dSystem.TheConverter.PxToMeters(-15)})
+		vertices = append(vertices, box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(0), Y: engoBox2dSystem.Conv.PxToMeters(-50)})
+		vertices = append(vertices, box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(49), Y: engoBox2dSystem.Conv.PxToMeters(-15)})
+		vertices = append(vertices, box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(30), Y: engoBox2dSystem.Conv.PxToMeters(41)})
+		vertices = append(vertices, box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(-31), Y: engoBox2dSystem.Conv.PxToMeters(41)})
+		vertices = append(vertices, box2d.B2Vec2{X: engoBox2dSystem.Conv.PxToMeters(-50), Y: engoBox2dSystem.Conv.PxToMeters(-15)})
 		starBodyShape.Set(vertices, 5)
 		starFixtureDef := box2d.B2FixtureDef{Shape: &starBodyShape}
 		star.Box2dComponent.Body.CreateFixtureFromDef(&starFixtureDef)

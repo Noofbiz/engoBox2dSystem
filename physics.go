@@ -46,15 +46,15 @@ func (b *PhysicsSystem) Remove(basic ecs.BasicEntity) {
 func (b *PhysicsSystem) Update(dt float32) {
 	//Set World components to the Render/Space Components
 	for _, e := range b.entities {
-		e.Body.SetTransform(TheConverter.ToBox2d2Vec(e.Center()), TheConverter.DegToRad(e.Rotation))
+		e.Body.SetTransform(Conv.ToBox2d2Vec(e.Center()), Conv.DegToRad(e.Rotation))
 	}
 
 	World.Step(float64(dt), b.VelocityIterations, b.PositionIterations)
 
 	//Update Render/Space components to World components after simulation
 	for _, e := range b.entities {
-		e.SpaceComponent.Rotation = TheConverter.RadToDeg(e.Body.GetAngle())
-		e.SpaceComponent.SetCenter(TheConverter.ToEngoPoint(e.Body.GetPosition()))
+		e.SpaceComponent.Rotation = Conv.RadToDeg(e.Body.GetAngle())
+		e.SpaceComponent.SetCenter(Conv.ToEngoPoint(e.Body.GetPosition()))
 	}
 
 	//Remove all bodies on list for removal

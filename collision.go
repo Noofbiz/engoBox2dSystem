@@ -89,7 +89,7 @@ func (c *CollisionSystem) Remove(basic ecs.BasicEntity) {
 func (c *CollisionSystem) Update(dt float32) {
 	//Set World components to the Render/Space Components
 	for _, e := range c.entities {
-		e.Body.SetTransform(TheConverter.ToBox2d2Vec(e.Center()), TheConverter.DegToRad(e.Rotation))
+		e.Body.SetTransform(Conv.ToBox2d2Vec(e.Center()), Conv.DegToRad(e.Rotation))
 	}
 
 	//Remove all bodies on list for removal
