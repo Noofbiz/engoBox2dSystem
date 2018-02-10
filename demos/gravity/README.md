@@ -50,20 +50,20 @@ Once you have the body complete, add it to the entitty and the World
 The body only keeps track of the position, angle, and type of the entity. It does not know anything about the shape, size, joints, fixtures, or anything else. We'll need to add those separately.
 
 ```go
-	var dudeBodyShape box2d.B2PolygonShape
-	dudeBodyShape.SetAsBox(engoBox2dSystem.Conv.PxToMeters(dude.SpaceComponent.Width/2),
-		engoBox2dSystem.Conv.PxToMeters(dude.SpaceComponent.Height/2))
-	dudeFixtureDef := box2d.B2FixtureDef{
-		Shape:    &dudeBodyShape,
-		Density:  1.0,
-		Friction: 0.1,
-	}
-	dude.Box2dComponent.Body.CreateFixtureFromDef(&dudeFixtureDef)
+var dudeBodyShape box2d.B2PolygonShape
+dudeBodyShape.SetAsBox(engoBox2dSystem.Conv.PxToMeters(dude.SpaceComponent.Width/2),
+	engoBox2dSystem.Conv.PxToMeters(dude.SpaceComponent.Height/2))
+dudeFixtureDef := box2d.B2FixtureDef{
+	Shape:    &dudeBodyShape,
+	Density:  1.0,
+	Friction: 0.1,
+}
+dude.Box2dComponent.Body.CreateFixtureFromDef(&dudeFixtureDef)
 ```
 
 Last, add it to the PhysicsSystem:
 
 ```go
-		case *engoBox2dSystem.PhysicsSystem:
-			sys.Add(&grass.BasicEntity, &grass.SpaceComponent, &grass.Box2dComponent)
+case *engoBox2dSystem.PhysicsSystem:
+	sys.Add(&grass.BasicEntity, &grass.SpaceComponent, &grass.Box2dComponent)
 ```
