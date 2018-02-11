@@ -44,7 +44,7 @@ type PostSolveMessage struct {
 func (PostSolveMessage) Type() string { return "PostSolveMessage" }
 
 type collisionEntity struct {
-	*ecs.BasicEntity
+	ecs.BasicEntity
 	*common.SpaceComponent
 	*Box2dComponent
 }
@@ -65,7 +65,7 @@ func (c *CollisionSystem) New(w *ecs.World) {
 // Add adds the entity to the collision system.
 // It also adds the body's user data to the BasicEntity's ID, which makes it
 // easy to figure out which entities are which when comparing in the messages / callbacks
-func (c *CollisionSystem) Add(basic *ecs.BasicEntity, space *common.SpaceComponent, box *Box2dComponent) {
+func (c *CollisionSystem) Add(basic ecs.BasicEntity, space *common.SpaceComponent, box *Box2dComponent) {
 	box.Body.SetUserData(basic.ID())
 	c.entities = append(c.entities, collisionEntity{basic, space, box})
 }
@@ -84,20 +84,9 @@ func (c *CollisionSystem) Remove(basic ecs.BasicEntity) {
 	}
 }
 
-// Update just syncs the space components with the box2d bodies, so the collisions
-// are based on the SpaceComponent position and rotation
-func (c *CollisionSystem) Update(dt float32) {
-	//Set World components to the Render/Space Components
-	for _, e := range c.entities {
-		e.Body.SetTransform(Conv.ToBox2d2Vec(e.Center()), Conv.DegToRad(e.Rotation))
-	}
-
-	//Remove all bodies on list for removal
-	for _, bod := range listOfBodiesToRemove {
-		World.DestroyBody(bod)
-	}
-	listOfBodiesToRemove = make([]*box2d.B2Body, 0)
-}
+// Update doesn't do anything, since the physics engine handles passing out the
+// callbacks.
+func (c *CollisionSystem) Update(dt float32) {}
 
 // BeginContact implements the B2ContactListener interface.
 // when a BeginContact callback is made by box2d, it sends a message containing
