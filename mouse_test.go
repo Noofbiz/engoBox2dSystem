@@ -9,6 +9,8 @@ import (
 	"engo.io/ecs"
 	"engo.io/engo"
 	"engo.io/engo/common"
+	"engo.io/engo/math"
+	"engo.io/gl"
 
 	"github.com/ByteArena/box2d"
 )
@@ -246,21 +248,266 @@ func TestMouseSystemCameraMove(t *testing.T) {
 		Height:       100,
 		NoRun:        true,
 		HeadlessMode: true,
-	}, &MouseTestScene{2})
+	}, &MouseTestScene{1})
 
-	basic := ecs.NewBasic()
-	space := &common.SpaceComponent{
-		Position: engo.Point{X: 0, Y: 0},
-		Rotation: 0,
+	shifts := [][]float32{
+		[]float32{5, 5, 0, 0, 0, 15},
+		[]float32{5, 5, 5, 0, 0, 0},
+		[]float32{5, 5, 0, 5, 0, 0},
+		[]float32{5, 5, 0, 0, 2, 0},
+		[]float32{5, 5, 5, 5, 0, 15},
+		[]float32{5, 5, 5, 0, 2, 0},
+		[]float32{5, 5, 0, 5, 2, 0},
+		[]float32{5, 5, 5, 5, 2, 0},
+		[]float32{5, 5, 5, 5, 2, 15},
+		[]float32{5, 5, 5, 5, 2, 15},
+		[]float32{5, 5, 5, 5, 2, 15},
 	}
-	sys.camera.FollowEntity(&basic, space)
 
-	sys.camera.Update(updateTime)
+	for i := 0; i < len(shifts); i++ {
+		//To test the backend
+		if i == len(shifts)-3 {
+			engo.Backend = "Mobile"
+		} else if i == len(shifts)-2 {
+			engo.Backend = "Web"
+		} else {
+			engo.Backend = "GLFW"
+		}
+
+		expX, expY := cameraShift(shifts[i][0], shifts[i][1], shifts[i][2], shifts[i][3], shifts[i][4], shifts[i][5])
+
+		sys.camera.Update(updateTime)
+		sys.Update(updateTime)
+
+		if expX != sys.mouseX {
+			t.Errorf("mouse X did not match expected X, want %v, have %v, test case %d", expX, sys.mouseX, i)
+		}
+
+		if expY != sys.mouseY {
+			t.Errorf("mouse Y did not match expected Y, want %v, have %v, test case %d", expY, sys.mouseY, i)
+		}
+
+		resetCamera()
+	}
+}
+
+func cameraShift(origX, origY, transX, transY, transZ, rotation float32) (expectedX, expectedY float32) {
+	engo.Input.Mouse.X = origX
+	engo.Input.Mouse.Y = origY
+	expectedX = origX
+	expectedY = origY
+
+	if transZ != 0 {
+		engo.Mailbox.Dispatch(common.CameraMessage{
+			Axis:  common.ZAxis,
+			Value: transZ,
+		})
+		expectedX = expectedX*sys.camera.Z() - (engo.GameWidth() * (sys.camera.Z() - 1) / 2)
+		expectedY = expectedY*sys.camera.Z() - (engo.GameHeight() * (sys.camera.Z() - 1) / 2)
+	}
+
+	if transX != 0 {
+		engo.Mailbox.Dispatch(common.CameraMessage{
+			Axis:        common.XAxis,
+			Value:       transX,
+			Incremental: true,
+		})
+		expectedX += transX
+	}
+
+	if transY != 0 {
+		engo.Mailbox.Dispatch(common.CameraMessage{
+			Axis:        common.YAxis,
+			Value:       transY,
+			Incremental: true,
+		})
+		expectedY += transY
+	}
+
+	if rotation != 0 {
+		engo.Mailbox.Dispatch(common.CameraMessage{
+			Axis:  common.Angle,
+			Value: rotation,
+		})
+		sin, cos := math.Sincos(rotation * math.Pi / 180)
+		expectedX, expectedY = expectedX*cos+expectedY*sin, expectedY*cos-expectedX*sin
+	}
+
+	return
+}
+
+func resetCamera() {
+	engo.Mailbox.Dispatch(common.CameraMessage{
+		Axis:  common.XAxis,
+		Value: common.CameraBounds.Max.X / 2,
+	})
+	engo.Mailbox.Dispatch(common.CameraMessage{
+		Axis:  common.YAxis,
+		Value: common.CameraBounds.Max.Y / 2,
+	})
+	engo.Mailbox.Dispatch(common.CameraMessage{
+		Axis:  common.ZAxis,
+		Value: 1,
+	})
+	engo.Mailbox.Dispatch(common.CameraMessage{
+		Axis:  common.Angle,
+		Value: 0,
+	})
+}
+
+//Tracking should update the mouseEntity whenever the mouse moves
+func TestMouseSystemTracking(t *testing.T) {
+	updateTime := float32(1.0 / 60.0)
+	engo.Run(engo.RunOptions{
+		Width:        100,
+		Height:       100,
+		NoRun:        true,
+		HeadlessMode: true,
+	}, &MouseTestScene{3})
+
+	//add tracking to two entities
+	sys.entities[0].Track = true
+	sys.entities[2].Track = true
+
+	moves := []float32{
+		15, 15,
+		5, 5,
+		25, 5,
+		45, 5,
+	}
+
+	for i := 0; i < len(moves); i += 2 {
+		//move the mouse
+		engo.Input.Mouse.X = moves[i]
+		engo.Input.Mouse.Y = moves[i+1]
+
+		//update
+		sys.Update(updateTime)
+
+		//check X of each entity
+		for _, e := range sys.entities {
+			if e.Track {
+				if e.MouseX != engo.Input.Mouse.X {
+					t.Errorf("Tracking mouse X doesn't match input, tracking: %v, mouse: %v", e.MouseX, engo.Input.Mouse.X)
+				}
+				if e.MouseY != engo.Input.Mouse.Y {
+					t.Errorf("Tracking mouse Y doesn't match input, tracking: %v, mouse: %v", e.MouseY, engo.Input.Mouse.Y)
+				}
+			} else {
+				if e.MouseComponent.Hovered {
+					if e.MouseX != engo.Input.Mouse.X {
+						t.Errorf("While hovering, mouse should be tracked. for X, tracking: %v, mouse: %v", e.MouseX, engo.Input.Mouse.X)
+					}
+					if e.MouseY != engo.Input.Mouse.Y {
+						t.Errorf("While hovering, mouse should be tracked. for Y, tracking: %v, mouse: %v", e.MouseY, engo.Input.Mouse.Y)
+					}
+				} else {
+					if e.MouseX == engo.Input.Mouse.X {
+						t.Errorf("Mouse should not be tracked, for X, tracking: %v, mouse: %v", e.MouseX, engo.Input.Mouse.X)
+					}
+					if e.MouseY == engo.Input.Mouse.Y {
+						t.Errorf("Mouse should not be tracked, for Y, tracking: %v, mouse: %v", e.MouseX, engo.Input.Mouse.Y)
+					}
+				}
+			}
+		}
+	}
+}
+
+// If there's no SpaceComponent, the mouse should not updated
+func TestMouseSystemSpaceAndBoxComponentNil(t *testing.T) {
+	updateTime := float32(1.0 / 60.0)
+	engo.Run(engo.RunOptions{
+		Width:        100,
+		Height:       100,
+		NoRun:        true,
+		HeadlessMode: true,
+	}, &MouseTestScene{3})
+
+	// set components to nil
+	sys.entities[0].SpaceComponent = nil
+	sys.entities[2].SpaceComponent = nil
+	sys.entities[1].Box2dComponent = nil
+	sys.entities[2].Box2dComponent = nil
+
+	// hover over them and check for component being updated
+	for i, e := range sys.entities {
+		// input setup
+		engo.Input.Mouse.X = float32(i*20 + 5)
+		engo.Input.Mouse.Y = float32(i*20 + 5)
+
+		// update
+		sys.Update(updateTime)
+
+		// Check
+		if e.Hovered {
+			t.Errorf("updated to hovering even though there is no required component, entity: %d", i)
+		}
+	}
+}
+
+// testDrawable implements the common.Drawable interface without actually using
+// the gl context or gpu for testing headless
+type testDrawable struct {
+	width, height float32
+}
+
+func (d *testDrawable) Close() {}
+
+func (d *testDrawable) Width() float32 { return d.width }
+
+func (d *testDrawable) Height() float32 { return d.height }
+
+func (d *testDrawable) Texture() *gl.Texture { return nil }
+
+func (d *testDrawable) View() (float32, float32, float32, float32) { return 0, 0, 1, 1 }
+
+func TestMouseSystemRenderComponent(t *testing.T) {
+	updateTime := float32(1.0 / 60.0)
+	engo.Run(engo.RunOptions{
+		Width:        100,
+		Height:       100,
+		NoRun:        true,
+		HeadlessMode: true,
+	}, &MouseTestScene{3})
+
+	drawable := &testDrawable{width: 10, height: 10}
+
+	sys.entities[0].RenderComponent = &common.RenderComponent{
+		Drawable: drawable,
+	}
+
+	engo.Input.Mouse.X = 5
+	engo.Input.Mouse.Y = 5
+
 	sys.Update(updateTime)
 
-	space.Rotation = 45
+	//Hidden
+	sys.entities[1].RenderComponent = &common.RenderComponent{
+		Drawable: drawable,
+		Hidden:   true,
+	}
 
-	sys.camera.Update(updateTime)
+	engo.Input.Mouse.X = 25
+	engo.Input.Mouse.Y = 5
+
+	sys.Update(updateTime)
+
+	//hud
+	sys.entities[2].RenderComponent = &common.RenderComponent{
+		Drawable: drawable,
+	}
+	sys.entities[2].MouseComponent.IsHUDShader = true
+
+	engo.Input.Mouse.X = 45
+	engo.Input.Mouse.Y = 5
+
+	engo.Mailbox.Dispatch(common.CameraMessage{
+		Axis:        common.XAxis,
+		Value:       25,
+		Incremental: true,
+	})
+
 	sys.Update(updateTime)
 
 }
