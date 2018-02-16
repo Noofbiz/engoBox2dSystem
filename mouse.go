@@ -160,6 +160,7 @@ func (m *MouseSystem) Update(dt float32) {
 			Hovered:              e.MouseComponent.Hovered,
 			startedDragging:      e.MouseComponent.startedDragging,
 			rightStartedDragging: e.MouseComponent.rightStartedDragging,
+			IsHUDShader:          e.MouseComponent.IsHUDShader,
 		}
 
 		if e.MouseComponent.Track {

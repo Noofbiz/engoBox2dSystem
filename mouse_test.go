@@ -482,6 +482,10 @@ func TestMouseSystemRenderComponent(t *testing.T) {
 
 	sys.Update(updateTime)
 
+	if sys.entities[0].Hovered != true {
+		t.Error("render component test, entity 0 should be hovered but was not")
+	}
+
 	//Hidden
 	sys.entities[1].RenderComponent = &common.RenderComponent{
 		Drawable: drawable,
@@ -492,6 +496,10 @@ func TestMouseSystemRenderComponent(t *testing.T) {
 	engo.Input.Mouse.Y = 5
 
 	sys.Update(updateTime)
+
+	if sys.entities[1].Hovered == true {
+		t.Error("render component test, entity 1 should not be hovered but was")
+	}
 
 	//hud
 	sys.entities[2].RenderComponent = &common.RenderComponent{
@@ -510,4 +518,7 @@ func TestMouseSystemRenderComponent(t *testing.T) {
 
 	sys.Update(updateTime)
 
+	if sys.entities[2].Hovered != true {
+		t.Error("render component test, entity 2 should be hovered but was not")
+	}
 }
