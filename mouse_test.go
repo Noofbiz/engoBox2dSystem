@@ -522,3 +522,150 @@ func TestMouseSystemRenderComponent(t *testing.T) {
 		t.Error("render component test, entity 2 should be hovered but was not")
 	}
 }
+
+// test mouse button presses
+func TestMouseSystemButtonPresses(t *testing.T) {
+	updateTime := float32(1.0 / 60.0)
+	engo.Run(engo.RunOptions{
+		Width:        100,
+		Height:       100,
+		NoRun:        true,
+		HeadlessMode: true,
+	}, &MouseTestScene{1})
+
+	//Place cursor outside entity
+	engo.Input.Mouse.X = 15
+	engo.Input.Mouse.Y = 15
+
+	//Left click
+	engo.Input.Mouse.Button = engo.MouseButtonLeft
+
+	sys.Update(updateTime)
+
+	//Check that it didn't click it
+	if sys.entities[0].Clicked {
+		t.Error("Entity was left clicked even though the cursor was not over it")
+	}
+
+	//Click on the inside of the entity
+	engo.Input.Mouse.X = 5
+	engo.Input.Mouse.Y = 5
+
+	engo.Input.Mouse.Button = engo.MouseButtonLeft
+	engo.Input.Mouse.Action = engo.Press
+
+	sys.Update(updateTime)
+
+	if !sys.entities[0].Clicked {
+		t.Error("Entity was not left clicked with cursor over it")
+	}
+
+	if !sys.entities[0].startedDragging {
+		t.Error("Entity was not started dragging when left clicked with cursor over it")
+	}
+
+	if !sys.mouseDown {
+		t.Error("System did not change to mousedown when mouse left clicked")
+	}
+
+	//Move mouse
+	engo.Input.Mouse.X = 8
+	engo.Input.Mouse.Y = 8
+
+	engo.Input.Mouse.Action = engo.Move
+
+	sys.Update(updateTime)
+
+	if !sys.entities[0].Dragged {
+		t.Error("Entity was not left dragged")
+	}
+
+	//Release
+	engo.Input.Mouse.Action = engo.Release
+
+	sys.Update(updateTime)
+
+	if !sys.entities[0].Released {
+		t.Error("Entity was not left released when mouse was released")
+	}
+
+	if sys.entities[0].Dragged {
+		t.Error("Entity was still dragged when mouse was released")
+	}
+
+	if sys.entities[0].startedDragging {
+		t.Error("Entity was still startedDragging when mouse was released")
+	}
+
+	if sys.mouseDown {
+		t.Error("System was still mouseDown when mouse was released")
+	}
+
+	//Place cursor outside entity
+	engo.Input.Mouse.X = 15
+	engo.Input.Mouse.Y = 15
+
+	//Right click
+	engo.Input.Mouse.Button = engo.MouseButtonRight
+
+	sys.Update(updateTime)
+
+	//Check that it didn't click it
+	if sys.entities[0].RightClicked {
+		t.Error("Entity was right clicked even though the cursor was not over it")
+	}
+
+	//Click on the inside of the entity
+	engo.Input.Mouse.X = 5
+	engo.Input.Mouse.Y = 5
+
+	engo.Input.Mouse.Button = engo.MouseButtonRight
+	engo.Input.Mouse.Action = engo.Press
+
+	sys.Update(updateTime)
+
+	if !sys.entities[0].RightClicked {
+		t.Error("Entity was not right clicked with cursor over it")
+	}
+
+	if !sys.entities[0].rightStartedDragging {
+		t.Error("Entity was not right started dragging when right clicked with cursor over it")
+	}
+
+	if !sys.rightMouseDown {
+		t.Error("System did not change to rightMousedown when mouse right clicked")
+	}
+
+	//Move mouse
+	engo.Input.Mouse.X = 8
+	engo.Input.Mouse.Y = 8
+
+	engo.Input.Mouse.Action = engo.Move
+
+	sys.Update(updateTime)
+
+	if !sys.entities[0].RightDragged {
+		t.Error("Entity was not right dragged")
+	}
+
+	//Release
+	engo.Input.Mouse.Action = engo.Release
+
+	sys.Update(updateTime)
+
+	if !sys.entities[0].RightReleased {
+		t.Error("Entity was not right released when mouse was released")
+	}
+
+	if sys.entities[0].RightDragged {
+		t.Error("Entity was still right dragged when mouse was released")
+	}
+
+	if sys.entities[0].rightStartedDragging {
+		t.Error("Entity was still rightStartedDragging when mouse was released")
+	}
+
+	if sys.rightMouseDown {
+		t.Error("System was still rightMouseDown when mouse was released")
+	}
+}

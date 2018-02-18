@@ -16,3 +16,10 @@ var listOfBodiesToRemove []*box2d.B2Body
 func (b *Box2dComponent) DestroyBody() {
 	listOfBodiesToRemove = append(listOfBodiesToRemove, b.Body)
 }
+
+func removeBodies() {
+	for _, bod := range listOfBodiesToRemove {
+		World.DestroyBody(bod)
+	}
+	listOfBodiesToRemove = make([]*box2d.B2Body, 0)
+}

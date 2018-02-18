@@ -87,9 +87,10 @@ type MouseSystem struct {
 	world    *ecs.World
 	camera   *common.CameraSystem
 
-	mouseX    float32
-	mouseY    float32
-	mouseDown bool
+	mouseX         float32
+	mouseY         float32
+	mouseDown      bool
+	rightMouseDown bool
 }
 
 // Priority implements prioritizer interface
@@ -225,12 +226,12 @@ func (m *MouseSystem) Update(dt float32) {
 				case engo.MouseButtonLeft:
 					e.MouseComponent.Clicked = true
 					e.MouseComponent.startedDragging = true
+					m.mouseDown = true
 				case engo.MouseButtonRight:
 					e.MouseComponent.RightClicked = true
 					e.MouseComponent.rightStartedDragging = true
+					m.rightMouseDown = true
 				}
-
-				m.mouseDown = true
 			case engo.Release:
 				switch engo.Input.Mouse.Button {
 				case engo.MouseButtonLeft:
@@ -242,7 +243,7 @@ func (m *MouseSystem) Update(dt float32) {
 				if m.mouseDown && e.MouseComponent.startedDragging {
 					e.MouseComponent.Dragged = true
 				}
-				if m.mouseDown && e.MouseComponent.rightStartedDragging {
+				if m.rightMouseDown && e.MouseComponent.rightStartedDragging {
 					e.MouseComponent.RightDragged = true
 				}
 			}
@@ -255,15 +256,16 @@ func (m *MouseSystem) Update(dt float32) {
 		}
 
 		if engo.Input.Mouse.Action == engo.Release {
-			// dragging stops as soon as one of the currently pressed buttons
-			// is released
-			e.MouseComponent.Dragged = false
-			e.MouseComponent.startedDragging = false
-			// TODO maybe separate out the release into left-button release and right-button release
-			e.MouseComponent.rightStartedDragging = false
-			// mouseDown goes false as soon as one of the pressed buttons is
-			// released. Effectively ending any dragging
-			m.mouseDown = false
+			switch engo.Input.Mouse.Button {
+			case engo.MouseButtonLeft:
+				e.MouseComponent.Dragged = false
+				e.MouseComponent.startedDragging = false
+				m.mouseDown = false
+			case engo.MouseButtonRight:
+				e.MouseComponent.RightDragged = false
+				e.MouseComponent.rightStartedDragging = false
+				m.rightMouseDown = false
+			}
 		}
 
 		// propagate the modifiers to the mouse component so that game
@@ -272,8 +274,5 @@ func (m *MouseSystem) Update(dt float32) {
 	}
 
 	//Remove all bodies on list for removal
-	for _, bod := range listOfBodiesToRemove {
-		World.DestroyBody(bod)
-	}
-	listOfBodiesToRemove = make([]*box2d.B2Body, 0)
+	removeBodies()
 }
