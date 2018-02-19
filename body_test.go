@@ -22,10 +22,7 @@ func TestDestroyBody(t *testing.T) {
 	}
 
 	// Clear out list
-	for _, bod := range listOfBodiesToRemove {
-		World.DestroyBody(bod)
-	}
-	listOfBodiesToRemove = make([]*box2d.B2Body, 0)
+	removeBodies()
 
 	// Check that list was cleared
 	if len(listOfBodiesToRemove) != 0 {
