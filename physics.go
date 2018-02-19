@@ -3,8 +3,6 @@ package engoBox2dSystem
 import (
 	"engo.io/ecs"
 	"engo.io/engo/common"
-
-	"github.com/ByteArena/box2d"
 )
 
 type physicsEntity struct {
@@ -57,9 +55,5 @@ func (b *PhysicsSystem) Update(dt float32) {
 		e.SpaceComponent.SetCenter(Conv.ToEngoPoint(e.Body.GetPosition()))
 	}
 
-	//Remove all bodies on list for removal
-	for _, bod := range listOfBodiesToRemove {
-		World.DestroyBody(bod)
-	}
-	listOfBodiesToRemove = make([]*box2d.B2Body, 0)
+	removeBodies()
 }
