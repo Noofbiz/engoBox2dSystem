@@ -25,6 +25,11 @@ func (b *PhysicsSystem) Add(basic *ecs.BasicEntity, space *common.SpaceComponent
 	b.entities = append(b.entities, physicsEntity{basic, space, box})
 }
 
+// AddByInterface adds an entity to the Physics system
+func (b *PhysicsSystem) AddByInterface(o Physicsable) {
+	b.Add(o.GetBasicEntity(), o.GetSpaceComponent(), o.GetBox2dComponent())
+}
+
 // Remove removes the entity from the physics system.
 func (b *PhysicsSystem) Remove(basic ecs.BasicEntity) {
 	delete := -1

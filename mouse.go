@@ -119,6 +119,11 @@ func (m *MouseSystem) Add(basic *ecs.BasicEntity, mouse *MouseComponent, space *
 	m.entities = append(m.entities, mouseEntity{basic, mouse, space, render, box})
 }
 
+// AddByInterface adds the entity that implements the Mouseable interface to the MouseSystem
+func (m *MouseSystem) AddByInterface(o Mouseable) {
+	m.Add(o.GetBasicEntity(), o.GetMouseComponent(), o.GetSpaceComponent(), o.GetRenderComponent(), o.GetBox2dComponent())
+}
+
 // Remove removes an entity from the MouseSystem
 func (m *MouseSystem) Remove(basic ecs.BasicEntity) {
 	delete := -1

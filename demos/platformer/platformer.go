@@ -494,19 +494,8 @@ func (s *starCollectionSystem) New(w *ecs.World) {
 							}
 							if e2.BasicEntity.ID() == a || e2.BasicEntity.ID() == b {
 								// Remove it from all the appropriate systems
-								for _, system := range w.Systems() {
-									switch sys := system.(type) {
-									case *common.RenderSystem:
-										sys.Remove(e2.BasicEntity)
-									case *engoBox2dSystem.PhysicsSystem:
-										sys.Remove(e2.BasicEntity)
-									case *engoBox2dSystem.CollisionSystem:
-										sys.Remove(e2.BasicEntity)
-									case *starCollectionSystem:
-										sys.Remove(e2.BasicEntity)
-									}
-								}
 								e2.Box2dComponent.DestroyBody()
+								w.RemoveEntity(e2.BasicEntity)
 								engo.Mailbox.Dispatch(scoreMessage{})
 							}
 						}
