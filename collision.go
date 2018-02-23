@@ -44,7 +44,7 @@ type PostSolveMessage struct {
 func (PostSolveMessage) Type() string { return "PostSolveMessage" }
 
 type collisionEntity struct {
-	ecs.BasicEntity
+	*ecs.BasicEntity
 	*common.SpaceComponent
 	*Box2dComponent
 }
@@ -65,9 +65,14 @@ func (c *CollisionSystem) New(w *ecs.World) {
 // Add adds the entity to the collision system.
 // It also adds the body's user data to the BasicEntity's ID, which makes it
 // easy to figure out which entities are which when comparing in the messages / callbacks
-func (c *CollisionSystem) Add(basic ecs.BasicEntity, space *common.SpaceComponent, box *Box2dComponent) {
+func (c *CollisionSystem) Add(basic *ecs.BasicEntity, space *common.SpaceComponent, box *Box2dComponent) {
 	box.Body.SetUserData(basic.ID())
 	c.entities = append(c.entities, collisionEntity{basic, space, box})
+}
+
+// AddByInterface adds the entity to the collision system if it implements the Collisionable interface
+func (c *CollisionSystem) AddByInterface(o Collisionable) {
+	c.Add(o.GetBasicEntity(), o.GetSpaceComponent(), o.GetBox2dComponent())
 }
 
 // Remove removes the entity from the system

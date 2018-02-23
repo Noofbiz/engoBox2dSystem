@@ -669,3 +669,38 @@ func TestMouseSystemButtonPresses(t *testing.T) {
 		t.Error("System was still rightMouseDown when mouse was released")
 	}
 }
+
+func TestMouseSystemAddByInterface(t *testing.T) {
+	engo.Run(engo.RunOptions{
+		Width:        100,
+		Height:       100,
+		NoRun:        true,
+		HeadlessMode: true,
+	}, &MouseTestScene{0})
+
+	basic := ecs.NewBasic()
+	entity := mouseEntity{&basic, &MouseComponent{}, &common.SpaceComponent{}, nil, &Box2dComponent{}}
+	entity.SpaceComponent = &common.SpaceComponent{
+		Position: engo.Point{X: 0, Y: 0},
+		Width:    10,
+		Height:   10,
+	}
+	entityBodyDef := box2d.NewB2BodyDef()
+	entityBodyDef.Type = box2d.B2BodyType.B2_dynamicBody
+	entityBodyDef.Position = Conv.ToBox2d2Vec(entity.SpaceComponent.Center())
+	entityBodyDef.Angle = Conv.DegToRad(entity.SpaceComponent.Rotation)
+	entity.Box2dComponent.Body = World.CreateBody(entityBodyDef)
+	var entityShape box2d.B2PolygonShape
+	entityShape.SetAsBox(Conv.PxToMeters(entity.SpaceComponent.Width/2),
+		Conv.PxToMeters(entity.SpaceComponent.Height/2))
+	entityFixtureDef := box2d.B2FixtureDef{
+		Shape:    &entityShape,
+		Density:  1,
+		Friction: 1,
+	}
+	entity.Box2dComponent.Body.CreateFixtureFromDef(&entityFixtureDef)
+	sys.AddByInterface(entity)
+	if len(sys.entities) != 1 {
+		t.Errorf("AddByInterface for MouseSystem failed; wanted %d, have %d entities", 1, len(sys.entities))
+	}
+}

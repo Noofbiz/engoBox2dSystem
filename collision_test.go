@@ -41,8 +41,9 @@ func TestCollisionSystem(t *testing.T) {
 	//Add some entities
 	basics := make([]ecs.BasicEntity, 0)
 	for i := 0; i < 5; i++ {
-		entity := collisionEntity{ecs.NewBasic(), &common.SpaceComponent{}, &Box2dComponent{}}
-		basics = append(basics, entity.BasicEntity)
+		basic := ecs.NewBasic()
+		entity := collisionEntity{&basic, &common.SpaceComponent{}, &Box2dComponent{}}
+		basics = append(basics, basic)
 		entity.SpaceComponent = &common.SpaceComponent{
 			Position: engo.Point{X: float32(i * 100), Y: 0},
 			Width:    10,
@@ -63,7 +64,7 @@ func TestCollisionSystem(t *testing.T) {
 		}
 		entity.Box2dComponent.Body.CreateFixtureFromDef(&entityFixtureDef)
 		sys.Add(entity.BasicEntity, entity.SpaceComponent, entity.Box2dComponent)
-		phys.Add(&entity.BasicEntity, entity.SpaceComponent, entity.Box2dComponent)
+		phys.Add(entity.BasicEntity, entity.SpaceComponent, entity.Box2dComponent)
 	}
 
 	// Check that the system's entities are correct
@@ -178,5 +179,44 @@ func TestCollisionSystem(t *testing.T) {
 
 	if !recEndMessage {
 		t.Errorf("did not recieve collision end message")
+	}
+}
+
+func TestCollisionSystemAddByInterface(t *testing.T) {
+	engo.Mailbox = &engo.MessageManager{}
+	sys := &CollisionSystem{}
+	sys.New(nil)
+
+	phys := &PhysicsSystem{VelocityIterations: 3, PositionIterations: 8}
+
+	basic := ecs.NewBasic()
+	space := common.SpaceComponent{
+		Width:  10,
+		Height: 10,
+	}
+	entityBodyDef := box2d.NewB2BodyDef()
+	entityBodyDef.Type = box2d.B2BodyType.B2_dynamicBody
+	entityBodyDef.Position = Conv.ToBox2d2Vec(space.Center())
+	entityBodyDef.Angle = Conv.DegToRad(space.Rotation)
+	boxBody := World.CreateBody(entityBodyDef)
+	var entityShape box2d.B2PolygonShape
+	entityShape.SetAsBox(Conv.PxToMeters(space.Width/2),
+		Conv.PxToMeters(space.Height/2))
+	entityFixtureDef := box2d.B2FixtureDef{
+		Shape:    &entityShape,
+		Density:  1,
+		Friction: 1,
+	}
+	boxBody.CreateFixtureFromDef(&entityFixtureDef)
+	e := collisionEntity{&basic, &space, &Box2dComponent{Body: boxBody}}
+	sys.AddByInterface(e)
+	phys.AddByInterface(e)
+
+	if len(sys.entities) != 1 {
+		t.Errorf("AddByInterface failed for collision system; wanted %d, have %d", 1, len(sys.entities))
+	}
+
+	if len(phys.entities) != 1 {
+		t.Errorf("AddByInterface failed for physics system; wanted %d, have %d", 1, len(sys.entities))
 	}
 }
