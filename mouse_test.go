@@ -267,11 +267,11 @@ func TestMouseSystemCameraMove(t *testing.T) {
 	for i := 0; i < len(shifts); i++ {
 		//To test the backend
 		if i == len(shifts)-3 {
-			engo.Backend = "Mobile"
+			engo.CurrentBackEnd = engo.BackEndMobile
 		} else if i == len(shifts)-2 {
-			engo.Backend = "Web"
+			engo.CurrentBackEnd = engo.BackEndWeb
 		} else {
-			engo.Backend = "GLFW"
+			engo.CurrentBackEnd = engo.BackEndGLFW
 		}
 
 		expX, expY := cameraShift(shifts[i][0], shifts[i][1], shifts[i][2], shifts[i][3], shifts[i][4], shifts[i][5])
