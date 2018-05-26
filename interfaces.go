@@ -8,7 +8,7 @@ func (b *Box2dComponent) GetBox2dComponent() *Box2dComponent {
 	return b
 }
 
-// GetBox2dMouseComponent gets the *MouseComponent
+// GetMouseComponent gets the *MouseComponent
 func (m *MouseComponent) GetMouseComponent() *MouseComponent {
 	return m
 }
@@ -18,7 +18,7 @@ type Box2dFace interface {
 	GetBox2dComponent() *Box2dComponent
 }
 
-// Box2dMouseFace is an interface for the MouseComponent
+// MouseFace is an interface for the MouseComponent
 type MouseFace interface {
 	GetMouseComponent() *MouseComponent
 }

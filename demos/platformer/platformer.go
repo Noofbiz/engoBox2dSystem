@@ -36,12 +36,14 @@ var fnt *common.Font
 func (*defaultScene) Preload() {
 	engo.Files.Load("icon.png", "grass.png", "star_gold.png", "Oswald-SemiBold.ttf")
 
-	engo.Input.RegisterButton("up", engo.W, engo.ArrowUp, engo.Space)
-	engo.Input.RegisterButton("left", engo.A, engo.ArrowLeft)
-	engo.Input.RegisterButton("right", engo.D, engo.ArrowRight)
+	engo.Input.RegisterButton("up", engo.KeyW, engo.KeyArrowUp, engo.KeySpace)
+	engo.Input.RegisterButton("left", engo.KeyA, engo.KeyArrowLeft)
+	engo.Input.RegisterButton("right", engo.KeyD, engo.KeyArrowRight)
 }
 
-func (*defaultScene) Setup(w *ecs.World) {
+func (*defaultScene) Setup(u engo.Updater) {
+	w, _ := u.(*ecs.World)
+
 	bg := color.RGBA{R: 135, G: 206, B: 235}
 	common.SetBackground(bg)
 

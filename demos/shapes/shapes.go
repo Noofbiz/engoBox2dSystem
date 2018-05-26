@@ -33,7 +33,9 @@ func (*defaultScene) Preload() {
 	engo.Files.Load("food.png")
 }
 
-func (*defaultScene) Setup(w *ecs.World) {
+func (*defaultScene) Setup(u engo.Updater) {
+	w, _ := u.(*ecs.World)
+
 	common.SetBackground(color.White)
 
 	w.AddSystem(&common.RenderSystem{})

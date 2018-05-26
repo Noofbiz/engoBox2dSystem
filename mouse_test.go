@@ -21,7 +21,9 @@ type MouseTestScene struct {
 
 func (*MouseTestScene) Preload() {}
 
-func (s *MouseTestScene) Setup(w *ecs.World) {
+func (s *MouseTestScene) Setup(u engo.Updater) {
+	w, _ := u.(*ecs.World)
+
 	// Add systems to the world
 	sys = &MouseSystem{}
 	w.AddSystem(&common.CameraSystem{})
