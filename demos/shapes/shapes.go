@@ -3,9 +3,9 @@ package main
 import (
 	"image/color"
 
-	"engo.io/ecs"
-	"engo.io/engo"
-	"engo.io/engo/common"
+	"github.com/EngoEngine/ecs"
+	"github.com/EngoEngine/engo"
+	"github.com/EngoEngine/engo/common"
 
 	"github.com/Noofbiz/engoBox2dSystem"
 
@@ -275,9 +275,10 @@ func (*defaultScene) Type() string { return "GameWorld" }
 
 func main() {
 	opts := engo.RunOptions{
-		Title:  "Box2d-Engo Mouse and Shape Demo",
-		Width:  1024,
-		Height: 640,
+		Title:       "Box2d-Engo Mouse and Shape Demo",
+		Width:       1024,
+		Height:      640,
+		GlobalScale: engo.Point{2, 2},
 	}
 	engo.Run(opts, &defaultScene{})
 }

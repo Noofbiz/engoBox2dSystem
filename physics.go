@@ -1,8 +1,8 @@
 package engoBox2dSystem
 
 import (
-	"engo.io/ecs"
-	"engo.io/engo/common"
+	"github.com/EngoEngine/ecs"
+	"github.com/EngoEngine/engo/common"
 )
 
 type physicsEntity struct {
@@ -20,7 +20,7 @@ type PhysicsSystem struct {
 }
 
 // Add adds the entity to the physics system
-// An entity needs a engo.io/ecs.BasicEntity, engo.io/engo/common.SpaceComponent, and a Box2dComponent in order to be added to the system
+// An entity needs a github.com/EngoEngine/ecs.BasicEntity, github.com/EngoEngine/engo/common.SpaceComponent, and a Box2dComponent in order to be added to the system
 func (b *PhysicsSystem) Add(basic *ecs.BasicEntity, space *common.SpaceComponent, box *Box2dComponent) {
 	b.entities = append(b.entities, physicsEntity{basic, space, box})
 }

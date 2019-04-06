@@ -1,10 +1,10 @@
 package engoBox2dSystem
 
 import (
-	"engo.io/ecs"
-	"engo.io/engo"
-	"engo.io/engo/common"
 	"github.com/ByteArena/box2d"
+	"github.com/EngoEngine/ecs"
+	"github.com/EngoEngine/engo"
+	"github.com/EngoEngine/engo/common"
 )
 
 // CollisionStartMessage is sent out for the box2d collision callback

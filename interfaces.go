@@ -1,6 +1,6 @@
 package engoBox2dSystem
 
-import "engo.io/engo/common"
+import "github.com/EngoEngine/engo/common"
 
 // GetBox2dComponent gets the *Box2dComponent from anything with a one, so they can implement
 // the interfaces and AddByInterface can work
