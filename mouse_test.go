@@ -6,11 +6,11 @@ import (
 	"strings"
 	"testing"
 
-	"engo.io/ecs"
-	"engo.io/engo"
-	"engo.io/engo/common"
-	"engo.io/engo/math"
-	"engo.io/gl"
+	"github.com/EngoEngine/ecs"
+	"github.com/EngoEngine/engo"
+	"github.com/EngoEngine/engo/common"
+	"github.com/EngoEngine/engo/math"
+	"github.com/EngoEngine/gl"
 
 	"github.com/ByteArena/box2d"
 )
